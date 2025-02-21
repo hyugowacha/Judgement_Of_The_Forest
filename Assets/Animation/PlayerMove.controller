@@ -129,7 +129,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HumanF@Sprint01_Forward
+  m_Name: Run
   m_Speed: 0.7
   m_CycleOffset: 0
   m_Transitions: []
@@ -209,7 +209,7 @@ AnimatorStateMachine:
     m_Position: {x: 410, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6793799687346299788}
-    m_Position: {x: 720, y: 120, z: 0}
+    m_Position: {x: 750, y: 130, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
