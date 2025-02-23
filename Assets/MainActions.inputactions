@@ -22,6 +22,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "cc80c096-4bff-49e3-ac85-cddd8f0d35f0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NormalSkill",
+                    "type": "Button",
+                    "id": "ab8aba86-ba25-4b69-b752-e77de814e52c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BurstSkill",
+                    "type": "Button",
+                    "id": "cd4d6eeb-d58e-440c-a237-a294de24307b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -93,23 +120,34 @@
                 },
                 {
                     "name": "",
-                    "id": "e85e378d-7448-4ddd-a34d-454eb424920f",
-                    "path": "<Keyboard>/e",
+                    "id": "e379cd1e-68b2-452a-bdb4-400081eb1a22",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "40647a76-ec1c-4058-9196-2db789641108",
+                    "id": "6d387cd5-cc87-4264-ac78-8eb782256735",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NormalSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92040c28-ae7a-4a88-af11-a7a9dd94802b",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "BurstSkill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
