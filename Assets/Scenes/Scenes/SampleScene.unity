@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.17449974, g: 0.2182481, b: 0.30049187, a: 1}
+  m_IndirectSpecularColor: {r: 0.17449938, g: 0.21824768, b: 0.30049124, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -255,6 +255,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
     - target: {fileID: 9500000, guid: 50a0208afad970f42b91e82ff62fab00, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 50a0208afad970f42b91e82ff62fab00, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
@@ -328,9 +332,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d6701feb2242924d9fce44ba753edeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerWeapon: {fileID: 2040377468}
-  AttackAnimator: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
-  MoveAnimator: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
+  playerWeapon: {fileID: 2040377468}
+  attackAnimator: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
+  moveAnimator: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
 --- !u!65 &692328286
 BoxCollider:
   m_ObjectHideFlags: 0
