@@ -64,5 +64,6 @@ public partial class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         playerCurrentState.FixedUpdateState(this);
+        Debug.Log(playerCurrentState.ToString());
     }
 }

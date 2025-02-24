@@ -112,27 +112,31 @@ public class AttackState : IPlayerState
             if (watingtime > player.MaxWatingTime)
             {
                 player.PlayerAnimator.SetTrigger("AttackOff");
-                WeaponOffCoroutine = player.StartCoroutine(EndAttackState(player, 0.2f));
+                WeaponOffCoroutine = player.StartCoroutine(EndAttackState(player));
+            }
+
+            if (WeaponOffCoroutine != null)
+            {
+                player.StopCoroutine(WeaponOffCoroutine);
+                WeaponOffCoroutine = null;
+                Debug.Log("clear");
             }
 
         }
     }
 
-    IEnumerator EndAttackState(PlayerController player, float delayTime)
+    IEnumerator EndAttackState(PlayerController player)
     {
-        yield return new WaitUntil(() => player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("AttackOff") &&
-        player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f);
-
-        player.ChangeState(new IdleState());
-
-        yield return new WaitForSeconds(delayTime);
-
-        if (WeaponOffCoroutine != null)
+        if (player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sheathing Sword"))
         {
-            player.StopCoroutine(WeaponOffCoroutine);
-            WeaponOffCoroutine = null;
-            Debug.Log("clear");
+            float animationLength = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).length;
+            yield return new WaitForSecondsRealtime(animationLength);
+
+            player.ChangeState(new IdleState());
+
+            yield return new WaitForSeconds(1.0f);
         }
+
     }
 
     public void FixedUpdateState(PlayerController player)
