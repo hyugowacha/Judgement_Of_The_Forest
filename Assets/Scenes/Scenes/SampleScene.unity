@@ -332,6 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d6701feb2242924d9fce44ba753edeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  nowPlayerState: 0
   playerWeapon: {fileID: 2040377468}
   attackAnimator: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
   moveAnimator: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}

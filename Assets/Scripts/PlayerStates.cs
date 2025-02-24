@@ -9,22 +9,34 @@ public interface IPlayerState
     void FixedUpdateState(PlayerController player);
 }
 
-public class IdleState : IPlayerState 
+public class IdleState : IPlayerState
 {
     public void EnterState(PlayerController player)
     {
-        player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
         player.PlayerAnimator.applyRootMotion = false;
+        player.PlayerAnimator.runtimeAnimatorController = player.MoveAnimator;
+        player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
     public void UpdateState(PlayerController player)
     {
-        
+        if (player.MoveDir != Vector3.zero)
+        {
+            player.ChangeState(new RunningState());
+            return;
+        }
+
+        if (player.AttackOn == true)
+        {
+            player.AttackOn = false;
+            player.ChangeState(new AttackState());
+            return;
+        }
     }
 
     public void FixedUpdateState(PlayerController player)
     {
-        
+
     }
 }
 
@@ -41,50 +53,90 @@ public class RunningState : IPlayerState
 
     public void FixedUpdateState(PlayerController player)
     {
-        
-    }
-
-    public void UpdateState(PlayerController player)
-    {       
         Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
         player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
         player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
 
-        player.PlayerAnimator.runtimeAnimatorController = player.MoveAnimator;        
+        player.PlayerAnimator.runtimeAnimatorController = player.MoveAnimator;
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
-
     }
 
+    public void UpdateState(PlayerController player)
+    {
+        if (player.MoveDir == Vector3.zero)
+        {
+            player.ChangeState(new IdleState());
+            return;
+        }
+
+        if (player.AttackOn == true)
+        {
+            player.AttackOn = false;
+            player.ChangeState(new AttackState());
+            return;
+        }
+
+
+    }
 }
 
 public class AttackState : IPlayerState
 {
     float watingtime;
+    Coroutine WeaponOffCoroutine;
+
     public void EnterState(PlayerController player)
     {
         player.PlayerAnimator.runtimeAnimatorController = player.AttackAnimator;
         player.PlayerWeapon.SetActive(true);
         player.PlayerAnimator.applyRootMotion = true;
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+    }
+
+    public void UpdateState(PlayerController player)
+    {
+        if (!player.AnimationInfo.IsName("Attack_Idle"))
+        {
+            player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        }
+
+        if (player.AnimationInfo.IsName("Attack_Idle"))
+        {
+            watingtime += Time.deltaTime;
+
+            if (player.MoveDir != Vector3.zero)
+            {
+                player.ChangeState(new RunningState());
+                return;
+            }
+
+            if (watingtime > player.MaxWatingTime)
+            {
+                player.PlayerAnimator.SetTrigger("AttackOff");
+                WeaponOffCoroutine = player.StartCoroutine(EndAttackState(player, 0.2f));
+            }
+
+        }
+    }
+
+    IEnumerator EndAttackState(PlayerController player, float delayTime)
+    {
+        yield return new WaitUntil(() => player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("AttackOff") &&
+        player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f);
+
+        player.ChangeState(new IdleState());
+
+        yield return new WaitForSeconds(delayTime);
+
+        if (WeaponOffCoroutine != null)
+        {
+            player.StopCoroutine(WeaponOffCoroutine);
+            WeaponOffCoroutine = null;
+            Debug.Log("clear");
+        }
     }
 
     public void FixedUpdateState(PlayerController player)
     {
     }
 
-    public void UpdateState(PlayerController player)
-    {
-        //Debug.Log(player.move)
-        if (player.AnimationInfo.IsName("Attack_Idle"))
-        {
-            watingtime += Time.deltaTime;
-
-            Debug.Log(watingtime);
-
-            if (watingtime > player.MaxWatingTime)
-            {
-                player.PlayerAnimator.SetTrigger("AttackOff");
-            }
-        }
-    }
 }

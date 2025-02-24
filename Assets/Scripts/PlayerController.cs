@@ -10,13 +10,15 @@ public partial class PlayerController : MonoBehaviour
 {
     Animator playerAnimator;
     Vector3 moveDir;
-    float turnSpeed = 5.0f;
+    float turnSpeed = 10.0f;
     float moveSpeed = 4.0f;
-    float maxWatingTime = 10.0f;
+    float maxWatingTime = 6.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
+    bool attackOn;
 
+    public PlayerState nowPlayerState;
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
     public AnimatorController moveAnimator;
@@ -32,6 +34,11 @@ public partial class PlayerController : MonoBehaviour
         ChangeState(new IdleState());
     }
 
+    public void WeaponOff()
+    {
+        playerWeapon.SetActive(false);
+    }
+
     public void ChangeState(IPlayerState newState)
     {
         playerCurrentState = newState;
@@ -42,31 +49,20 @@ public partial class PlayerController : MonoBehaviour
     {
         dir = val.Get<Vector2>();
         moveDir = new Vector3(dir.x, 0, dir.y);
-
-        if (moveDir != Vector3.zero)
-        {
-            ChangeState(new RunningState());
-        }
-
-        else
-        {
-            ChangeState(new IdleState());
-        }
     }
 
     void OnAttack()
     {
-        Debug.Log("АјАн");
-        
-
-        ChangeState(new AttackState());
-
-        
+        attackOn = true;
     }
 
     private void Update()
     {
         playerCurrentState.UpdateState(this);
-        Debug.Log(playerCurrentState);
+    }
+
+    private void FixedUpdate()
+    {
+        playerCurrentState.FixedUpdateState(this);
     }
 }

@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Animations;
 
+public enum PlayerState
+{
+    IDLE, RUNNING, ATTACK
+}
+
 public partial class PlayerController : MonoBehaviour
 {
     public Animator PlayerAnimator
@@ -17,6 +22,12 @@ public partial class PlayerController : MonoBehaviour
         set { maxWatingTime = value; }
     }
 
+    public bool AttackOn
+    {
+        get { return attackOn; }
+        set { attackOn = value; }
+    }
+
     public Vector3 MoveDir
     {
         get { return moveDir; }
@@ -28,6 +39,8 @@ public partial class PlayerController : MonoBehaviour
         get { return dir; }
         set { dir = value; }
     }
+
+    
 
     public AnimatorStateInfo AnimationInfo
     {
