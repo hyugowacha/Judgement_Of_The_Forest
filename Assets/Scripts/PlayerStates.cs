@@ -65,6 +65,7 @@ public class AttackState : IPlayerState
         player.PlayerAnimator.runtimeAnimatorController = player.AttackAnimator;
         player.PlayerWeapon.SetActive(true);
         player.PlayerAnimator.applyRootMotion = true;
+        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -73,6 +74,7 @@ public class AttackState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
+        //Debug.Log(player.move)
         if (player.AnimationInfo.IsName("Attack_Idle"))
         {
             watingtime += Time.deltaTime;
