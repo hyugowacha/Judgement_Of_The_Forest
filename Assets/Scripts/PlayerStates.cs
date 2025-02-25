@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public interface IPlayerState
@@ -29,6 +30,13 @@ public class IdleState : IPlayerState
         if (player.AttackOn == true)
         {
             player.ChangeState(new ComboAttack1State());
+            return;
+        }
+
+        if (player.JumpOn == true)
+        {
+            player.ChangeState(new JumpingState());
+            player.JumpOn = false;
             return;
         }
     }
@@ -86,25 +94,70 @@ public class RunningState : IPlayerState
             player.PlayerAnimator.SetBool("isDash", false);
         }
 
+        if(player.JumpOn == true)
+        {
+            player.ChangeState(new JumpingState());
+            player.JumpOn = false;
+            return;
+        }
+
     }
 }
 
-public class JumingState : IPlayerState
+public class JumpingState : IPlayerState
 {
+    bool canJump = true;
+    bool isGrounded = true;
+
     public void EnterState(PlayerController player)
     {
-        
-    }
-
-    public void FixedUpdateState(PlayerController player)
-    {
-
+        if(canJump == true)
+        {
+            Debug.Log("มกวม");
+            player.PlayerAnimator.SetTrigger("isJump");
+            player.Rigid.AddForce(new Vector3(0, player.JumpPower, 0), ForceMode.Impulse);
+            canJump = false;
+        }
     }
 
     public void UpdateState(PlayerController player)
     {
+        CheckisGrounded(player);
 
+        if (isGrounded == true)
+        {
+            player.PlayerAnimator.SetTrigger("isLand");
+            canJump = true;
+            player.ChangeState(new IdleState());
+        }
     }
+
+    public void FixedUpdateState(PlayerController player)
+    {
+        if (player.Rigid.velocity.y != 0)
+        {
+            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir * 0.5f);
+            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 0.5f));
+        }
+    }
+
+    private void CheckisGrounded(PlayerController player)
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(player.transform.position, Vector3.down, out hit, 0.9f))
+        {
+            if (hit.collider != null && hit.collider.CompareTag("Ground"))
+            {
+                isGrounded = true;
+            }
+        }
+        else
+        {
+            isGrounded = false;
+        }
+    }
+
 }
 
 public class AttackOnState : IPlayerState

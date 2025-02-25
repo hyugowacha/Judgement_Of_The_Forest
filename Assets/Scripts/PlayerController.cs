@@ -13,6 +13,7 @@ public partial class PlayerController : MonoBehaviour
     float turnSpeed = 20.0f;
     float moveSpeed = 4.0f;
     float maxWatingTime = 6.0f;
+    float jumpPower = 5.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
@@ -23,6 +24,7 @@ public partial class PlayerController : MonoBehaviour
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
     public AnimatorController moveAnimator;
+    public Collider playerFeetCollider;
 
     IPlayerState playerCurrentState;
 
@@ -31,6 +33,7 @@ public partial class PlayerController : MonoBehaviour
     InputAction moveAction;
     InputAction attackAction;
     InputAction dashAction;
+    InputAction jumpAction;
 
     void Start()
     {
@@ -45,14 +48,17 @@ public partial class PlayerController : MonoBehaviour
         moveAction = mainActionMap.FindAction("Move");
         attackAction = mainActionMap.FindAction("Attack");
         dashAction = mainActionMap.FindAction("Dash");
+        jumpAction = mainActionMap.FindAction("Jump");
 
         moveAction.performed += OnMove;
         moveAction.canceled += OnMove;
 
-        attackAction.performed += OnAttack;
+        attackAction.started += OnAttack;
 
         dashAction.performed += OnDash;
         dashAction.canceled += OnDash;
+
+        jumpAction.performed += OnJump;
 
         ChangeState(new IdleState());
     }
@@ -94,7 +100,7 @@ public partial class PlayerController : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext ctx)
     {
-
+        jumpOn = true;
     }
 
     private void Update()
@@ -105,6 +111,6 @@ public partial class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         playerCurrentState.FixedUpdateState(this);
-        //Debug.Log(playerCurrentState.ToString());
+        Debug.Log(playerCurrentState.ToString());
     }
 }

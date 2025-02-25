@@ -103,6 +103,24 @@ public partial class PlayerController : MonoBehaviour
         }
     }
 
+    public float JumpPower
+    {
+        get { return jumpPower; }
+        set
+        {
+            if (jumpPower > 8.0f)
+            {
+                jumpPower = 8.0f;
+            }
+
+            else
+            {
+                jumpPower = value;
+            }
+        }
+
+    }
+
 
 
 }

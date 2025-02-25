@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.17449938, g: 0.21824768, b: 0.30049124, a: 1}
+  m_IndirectSpecularColor: {r: 0.17449974, g: 0.2182481, b: 0.30049187, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -359,6 +359,7 @@ MonoBehaviour:
   playerWeapon: {fileID: 2040377468}
   attackAnimator: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
   moveAnimator: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
+  playerFeetCollider: {fileID: 692328286}
 --- !u!65 &692328286
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -374,12 +375,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.42438075, y: 0.07710768, z: 0.42929456}
-  m_Center: {x: -0.008982748, y: 0.05331856, z: 0.02033072}
+  m_Size: {x: 0.42438075, y: 0.09740786, z: 0.42929456}
+  m_Center: {x: -0.008982747, y: 0.04316847, z: 0.020330725}
 --- !u!136 &692328287
 CapsuleCollider:
   m_ObjectHideFlags: 0

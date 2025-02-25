@@ -26,7 +26,6 @@ public class ComboAttack1State : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        Debug.Log(player.AttackOn);
         player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo1") && player.AnimationInfo.normalizedTime >= 1.0f)
