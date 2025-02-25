@@ -10,7 +10,7 @@ public partial class PlayerController : MonoBehaviour
 {
     Animator playerAnimator;
     Vector3 moveDir;
-    float turnSpeed = 10.0f;
+    float turnSpeed = 20.0f;
     float moveSpeed = 4.0f;
     float maxWatingTime = 6.0f;
     Rigidbody rigid;
@@ -18,7 +18,6 @@ public partial class PlayerController : MonoBehaviour
     AnimatorStateInfo animationInfo;
     bool attackOn;
 
-    public PlayerState nowPlayerState;
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
     public AnimatorController moveAnimator;

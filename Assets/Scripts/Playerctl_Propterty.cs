@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.Animations;
 
-public enum PlayerState
-{
-    IDLE, RUNNING, ATTACK
-}
 
 public partial class PlayerController : MonoBehaviour
 {
@@ -60,17 +56,6 @@ public partial class PlayerController : MonoBehaviour
         set { playerWeapon = value; }
     }
 
-    public AnimatorController AttackAnimator
-    {
-        get { return attackAnimator; }
-        set { attackAnimator = value; }
-    }
-
-    public AnimatorController MoveAnimator
-    {
-        get { return moveAnimator; }
-        set { moveAnimator = value; }
-    }
 
     public float TurnSpeed
     {
@@ -79,7 +64,7 @@ public partial class PlayerController : MonoBehaviour
         {
             if (turnSpeed > 50.0f || turnSpeed < 1.0f) 
             {
-                turnSpeed = 5.0f;
+                turnSpeed = 20.0f;
             }
 
             else

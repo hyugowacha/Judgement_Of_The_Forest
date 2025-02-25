@@ -14,7 +14,7 @@ public class IdleState : IPlayerState
     public void EnterState(PlayerController player)
     {
         player.PlayerAnimator.applyRootMotion = false;
-        player.PlayerAnimator.runtimeAnimatorController = player.MoveAnimator;
+        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
@@ -28,8 +28,7 @@ public class IdleState : IPlayerState
 
         if (player.AttackOn == true)
         {
-            player.AttackOn = false;
-            player.ChangeState(new AttackState());
+            player.ChangeState(new ComboAttack1State());
             return;
         }
     }
@@ -57,7 +56,7 @@ public class RunningState : IPlayerState
         player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
         player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
 
-        player.PlayerAnimator.runtimeAnimatorController = player.MoveAnimator;
+        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
@@ -71,8 +70,8 @@ public class RunningState : IPlayerState
 
         if (player.AttackOn == true)
         {
+            player.ChangeState(new ComboAttack1State());
             player.AttackOn = false;
-            player.ChangeState(new AttackState());
             return;
         }
 
@@ -80,16 +79,17 @@ public class RunningState : IPlayerState
     }
 }
 
-public class AttackState : IPlayerState
+public class AttackOnState : IPlayerState
 {
     float watingtime;
     Coroutine WeaponOffCoroutine;
+    bool CanWeaponoff;
+    ComboAttack1State comboAttack1 = new();
 
     public void EnterState(PlayerController player)
     {
-        player.PlayerAnimator.runtimeAnimatorController = player.AttackAnimator;
-        player.PlayerWeapon.SetActive(true);
-        player.PlayerAnimator.applyRootMotion = true;
+        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AttackOn = false;
     }
 
     public void UpdateState(PlayerController player)
@@ -97,6 +97,11 @@ public class AttackState : IPlayerState
         if (!player.AnimationInfo.IsName("Attack_Idle"))
         {
             player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        }
+
+        if(player.AttackOn == true && player.AnimationInfo.IsName("Attack_Idle"))
+        {
+            player.ChangeState(new ComboAttack1State());
         }
 
         if (player.AnimationInfo.IsName("Attack_Idle"))
@@ -115,11 +120,11 @@ public class AttackState : IPlayerState
                 WeaponOffCoroutine = player.StartCoroutine(EndAttackState(player));
             }
 
-            if (WeaponOffCoroutine != null)
+            if (WeaponOffCoroutine != null && CanWeaponoff == false)
             {
                 player.StopCoroutine(WeaponOffCoroutine);
                 WeaponOffCoroutine = null;
-                Debug.Log("clear");
+                CanWeaponoff = true;
             }
 
         }
@@ -133,8 +138,7 @@ public class AttackState : IPlayerState
             yield return new WaitForSecondsRealtime(animationLength);
 
             player.ChangeState(new IdleState());
-
-            yield return new WaitForSeconds(1.0f);
+            CanWeaponoff = false;
         }
 
     }
