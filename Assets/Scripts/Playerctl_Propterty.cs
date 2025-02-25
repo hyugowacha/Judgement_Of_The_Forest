@@ -24,6 +24,18 @@ public partial class PlayerController : MonoBehaviour
         set { attackOn = value; }
     }
 
+    public bool DashOn
+    {
+        get { return dashOn; }
+        set { dashOn = value; }
+    }
+
+    public bool JumpOn
+    {
+        get { return jumpOn; }
+        set { jumpOn = value; }
+    }
+
     public Vector3 MoveDir
     {
         get { return moveDir; }
@@ -36,7 +48,7 @@ public partial class PlayerController : MonoBehaviour
         set { dir = value; }
     }
 
-    
+
 
     public AnimatorStateInfo AnimationInfo
     {
@@ -62,7 +74,7 @@ public partial class PlayerController : MonoBehaviour
         get { return turnSpeed; }
         set
         {
-            if (turnSpeed > 50.0f || turnSpeed < 1.0f) 
+            if (turnSpeed > 50.0f || turnSpeed < 1.0f)
             {
                 turnSpeed = 20.0f;
             }
@@ -78,9 +90,9 @@ public partial class PlayerController : MonoBehaviour
     public float MoveSpeed
     {
         get { return moveSpeed; }
-        set 
-        { 
-            if(moveSpeed > 8.0f)
+        set
+        {
+            if (moveSpeed > 8.0f)
             {
                 moveSpeed = 8.0f;
             }

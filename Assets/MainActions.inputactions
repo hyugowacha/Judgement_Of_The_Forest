@@ -9,7 +9,7 @@
                     "name": "Move",
                     "type": "Value",
                     "id": "57d87172-d604-46ee-9049-c70e97f4e81a",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -45,6 +45,15 @@
                     "name": "BurstSkill",
                     "type": "Button",
                     "id": "cd4d6eeb-d58e-440c-a237-a294de24307b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "6a871731-d49d-4f7c-8e85-f051b2d8a627",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -148,6 +157,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "BurstSkill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "57a48ef1-f017-41b1-bb7b-1cd6c23d568f",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

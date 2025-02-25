@@ -17,6 +17,8 @@ public partial class PlayerController : MonoBehaviour
     Vector2 dir;
     AnimatorStateInfo animationInfo;
     bool attackOn;
+    bool dashOn;
+    bool jumpOn;
 
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
@@ -24,11 +26,33 @@ public partial class PlayerController : MonoBehaviour
 
     IPlayerState playerCurrentState;
 
+    PlayerInput playerInput;
+    InputActionMap mainActionMap;
+    InputAction moveAction;
+    InputAction attackAction;
+    InputAction dashAction;
+
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         animationInfo = playerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        playerInput = GetComponent<PlayerInput>();
+        mainActionMap = playerInput.actions.FindActionMap("PlayerActions");
+
+
+        moveAction = mainActionMap.FindAction("Move");
+        attackAction = mainActionMap.FindAction("Attack");
+        dashAction = mainActionMap.FindAction("Dash");
+
+        moveAction.performed += OnMove;
+        moveAction.canceled += OnMove;
+
+        attackAction.performed += OnAttack;
+
+        dashAction.performed += OnDash;
+        dashAction.canceled += OnDash;
 
         ChangeState(new IdleState());
     }
@@ -44,15 +68,33 @@ public partial class PlayerController : MonoBehaviour
         playerCurrentState.EnterState(this);
     }
 
-    void OnMove(InputValue val)
+    void OnMove(InputAction.CallbackContext ctx)
     {
-        dir = val.Get<Vector2>();
+        dir = ctx.ReadValue<Vector2>();
         moveDir = new Vector3(dir.x, 0, dir.y);
     }
 
-    void OnAttack()
+    void OnAttack(InputAction.CallbackContext ctx)
     {
         attackOn = true;
+    }
+
+    void OnDash(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            dashOn = true;
+        }
+
+        else if (ctx.canceled)
+        {
+            dashOn = false;
+        }
+    }
+
+    void OnJump(InputAction.CallbackContext ctx)
+    {
+
     }
 
     private void Update()
@@ -63,6 +105,6 @@ public partial class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         playerCurrentState.FixedUpdateState(this);
-        Debug.Log(playerCurrentState.ToString());
+        //Debug.Log(playerCurrentState.ToString());
     }
 }

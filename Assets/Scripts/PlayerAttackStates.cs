@@ -35,7 +35,7 @@ public class ComboAttack1State : IPlayerState
             return;
         }
 
-        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.6f)
+        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
             player.ChangeState(new ComboAttack2State());
             return;
@@ -74,7 +74,7 @@ public class ComboAttack2State : IPlayerState
             return;
         }
 
-        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.6f)
+        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
             player.ChangeState(new ComboAttack3State());
             return;
@@ -119,7 +119,7 @@ public class ComboAttack3State : IPlayerState
             return;
         }
 
-        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.6f)
+        if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
             player.ChangeState(new ComboAttack4State());
             return;

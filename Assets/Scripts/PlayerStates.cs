@@ -75,6 +75,34 @@ public class RunningState : IPlayerState
             return;
         }
 
+        if (player.DashOn == true) 
+        {
+            player.PlayerAnimator.SetBool("isDash",true);
+            player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
+        }
+
+        if(player.DashOn == false || player.MoveDir == Vector3.zero)
+        {
+            player.PlayerAnimator.SetBool("isDash", false);
+        }
+
+    }
+}
+
+public class JumingState : IPlayerState
+{
+    public void EnterState(PlayerController player)
+    {
+        
+    }
+
+    public void FixedUpdateState(PlayerController player)
+    {
+
+    }
+
+    public void UpdateState(PlayerController player)
+    {
 
     }
 }

@@ -253,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 9500000, guid: 50a0208afad970f42b91e82ff62fab00, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
+      objectReference: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
     - target: {fileID: 9500000, guid: 50a0208afad970f42b91e82ff62fab00, type: 3}
       propertyPath: m_UpdateMode
       value: 0
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 308c2fb37849b4f419f339aefb407cb2, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -314,7 +314,31 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 57d87172-d604-46ee-9049-c70e97f4e81a
+    m_ActionName: PlayerActions/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: aa85a9c0-5f00-4d4d-84c9-9e61bce4b683
+    m_ActionName: PlayerActions/Attack[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cc80c096-4bff-49e3-ac85-cddd8f0d35f0
+    m_ActionName: PlayerActions/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ab8aba86-ba25-4b69-b752-e77de814e52c
+    m_ActionName: PlayerActions/NormalSkill[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: cd4d6eeb-d58e-440c-a237-a294de24307b
+    m_ActionName: PlayerActions/BurstSkill[/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6a871731-d49d-4f7c-8e85-f051b2d8a627
+    m_ActionName: PlayerActions/Dash[/Keyboard/leftShift]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: PlayerActions
@@ -332,7 +356,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d6701feb2242924d9fce44ba753edeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nowPlayerState: 0
   playerWeapon: {fileID: 2040377468}
   attackAnimator: {fileID: 9100000, guid: 414189b0dcc1c9f4095872622e839779, type: 2}
   moveAnimator: {fileID: 9100000, guid: 81669c40dd48aa041a468ff3db529a62, type: 2}
