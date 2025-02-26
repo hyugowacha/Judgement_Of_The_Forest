@@ -107,11 +107,14 @@ public partial class PlayerController : MonoBehaviour
     private void Update()
     {
         playerCurrentState.UpdateState(this);
+        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 0.9f, transform.position.z), Vector3.down * 1.0f, Color.red, 0);
     }
 
     private void FixedUpdate()
     {
         playerCurrentState.FixedUpdateState(this);
         Debug.Log(playerCurrentState.ToString());
+        //Debug.Log(transform.position);
     }
+
 }

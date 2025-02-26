@@ -21,7 +21,7 @@ public class IdleState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        if(player.IsJumping == true)
+        if (player.IsJumping == true)
         {
             return;
         }
@@ -94,18 +94,18 @@ public class RunningState : IPlayerState
             return;
         }
 
-        if (player.DashOn == true) 
+        if (player.DashOn == true)
         {
-            player.PlayerAnimator.SetBool("isDash",true);
+            player.PlayerAnimator.SetBool("isDash", true);
             player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
         }
 
-        if(player.DashOn == false || player.MoveDir == Vector3.zero)
+        if (player.DashOn == false || player.MoveDir == Vector3.zero)
         {
             player.PlayerAnimator.SetBool("isDash", false);
         }
 
-        if(player.JumpOn == true)
+        if (player.JumpOn == true)
         {
             player.ChangeState(new JumpingState());
             player.JumpOn = false;
@@ -121,9 +121,11 @@ public class JumpingState : IPlayerState
     bool canJump = true;
     bool isGrounded = true;
 
+    Coroutine isGroundedCor;
+
     public void EnterState(PlayerController player)
     {
-        if(canJump == true)
+        if (canJump == true)
         {
             Debug.Log("Á¡ÇÁ");
             player.PlayerAnimator.SetTrigger("isJump");
@@ -134,7 +136,8 @@ public class JumpingState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        Debug.Log("¶¥"+isGrounded);
+        Debug.Log("¶¥" + isGrounded);      
+        isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
 
         if (isGrounded == true)
         {
@@ -152,7 +155,6 @@ public class JumpingState : IPlayerState
 
     public void FixedUpdateState(PlayerController player)
     {
-        CheckisGrounded(player);
 
         if (player.Rigid.velocity.y != 0)
         {
@@ -161,23 +163,27 @@ public class JumpingState : IPlayerState
         }
     }
 
-    private void CheckisGrounded(PlayerController player)
+    public IEnumerator CheckisGrounded(PlayerController player)
     {
         RaycastHit hit;
-        Debug.DrawRay(player.transform.position, Vector3.down * 1.0f, Color.red, 0);
+        Debug.DrawRay(new Vector3(player.transform.position.x, player.transform.position.y + 0.9f, player.transform.position.z), Vector3.down, Color.red, 0);
 
-        if (Physics.Raycast(player.transform.position, Vector3.down, out hit, 0.9f))
+        yield return new WaitForSeconds(0.5f);
+
+        Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y + 0.9f, player.transform.position.z), Vector3.down, out hit, 0);
+
+        if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
-            if (hit.collider != null && hit.collider.CompareTag("Ground"))
-            {
-                isGrounded = true;
-            }
+            isGrounded = true;
         }
+
         else
         {
             isGrounded = false;
         }
     }
+
+
 
 }
 
@@ -201,7 +207,7 @@ public class AttackOnState : IPlayerState
             player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
         }
 
-        if(player.AttackOn == true && player.AnimationInfo.IsName("Attack_Idle"))
+        if (player.AttackOn == true && player.AnimationInfo.IsName("Attack_Idle"))
         {
             player.ChangeState(new ComboAttack1State());
         }
