@@ -59,7 +59,7 @@ public partial class PlayerController : MonoBehaviour
         dashAction.performed += OnDash;
         dashAction.canceled += OnDash;
 
-        jumpAction.performed += OnJump;
+        jumpAction.started += OnJump;
 
         ChangeState(new IdleState());
     }

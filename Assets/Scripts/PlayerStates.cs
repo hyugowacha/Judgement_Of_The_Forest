@@ -23,6 +23,7 @@ public class IdleState : IPlayerState
     {
         if (player.IsJumping == true)
         {
+            player.ChangeState(new JumpingState());
             return;
         }
 
@@ -78,6 +79,7 @@ public class RunningState : IPlayerState
     {
         if (player.IsJumping == true)
         {
+            player.ChangeState(new JumpingState());
             return;
         }
 
@@ -120,14 +122,12 @@ public class JumpingState : IPlayerState
 {
     bool canJump = true;
     bool isGrounded = true;
-
     Coroutine isGroundedCor;
 
     public void EnterState(PlayerController player)
     {
-        if (canJump == true)
+        if (isGrounded == true && canJump == true) 
         {
-            Debug.Log("Á¡ÇÁ");
             player.PlayerAnimator.SetTrigger("isJump");
             player.Rigid.AddForce(new Vector3(0, player.JumpPower, 0), ForceMode.Impulse);
             canJump = false;
@@ -136,21 +136,28 @@ public class JumpingState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        Debug.Log("¶¥" + isGrounded);      
-        isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
+        if (isGrounded == true)
+        {
+            isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
+            player.IsJumping = false;
+
+        }
 
         if (isGrounded == true)
         {
-            player.PlayerAnimator.SetTrigger("isLand");
             canJump = true;
-            player.ChangeState(new IdleState());
-            player.IsJumping = false;
+
+            if (player.Rigid.velocity == Vector3.zero)
+            {
+                player.ChangeState(new IdleState());
+            }
+
+            if (player.Rigid.velocity != Vector3.zero)
+            {
+                player.ChangeState(new RunningState());
+            }
         }
 
-        else
-        {
-            canJump = false;
-        }
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -166,20 +173,32 @@ public class JumpingState : IPlayerState
     public IEnumerator CheckisGrounded(PlayerController player)
     {
         RaycastHit hit;
-        Debug.DrawRay(new Vector3(player.transform.position.x, player.transform.position.y + 0.9f, player.transform.position.z), Vector3.down, Color.red, 0);
+        Debug.DrawRay(new Vector3(player.transform.position.x, player.transform.position.y +
+            0.9f, player.transform.position.z), Vector3.down, Color.red, 0);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
-        Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y + 0.9f, player.transform.position.z), Vector3.down, out hit, 0);
-
-        if (hit.collider != null && hit.collider.CompareTag("Ground"))
+        while (true)
         {
-            isGrounded = true;
-        }
+            bool groundDetected = Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y +
+                0.9f, player.transform.position.z), Vector3.down, out hit, 1.0f, LayerMask.GetMask("Ground"));
 
-        else
-        {
-            isGrounded = false;
+            if (groundDetected == true &&  hit.collider != null)
+            {
+                isGrounded = true;
+                player.PlayerAnimator.SetTrigger("isLand");
+                player.Rigid.velocity = Vector3.zero;
+                yield return new WaitForSeconds(0.5f);
+                player.IsJumping = false;
+                yield break;
+            }
+
+            else
+            {
+                isGrounded = false;
+            }
+
+            yield return null;
         }
     }
 
@@ -254,5 +273,6 @@ public class AttackOnState : IPlayerState
     public void FixedUpdateState(PlayerController player)
     {
     }
+
 
 }
