@@ -21,6 +21,11 @@ public class IdleState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
+        if(player.IsJumping == true)
+        {
+            return;
+        }
+
         if (player.MoveDir != Vector3.zero)
         {
             player.ChangeState(new RunningState());
@@ -37,6 +42,7 @@ public class IdleState : IPlayerState
         {
             player.ChangeState(new JumpingState());
             player.JumpOn = false;
+            player.IsJumping = true;
             return;
         }
     }
@@ -70,6 +76,11 @@ public class RunningState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
+        if (player.IsJumping == true)
+        {
+            return;
+        }
+
         if (player.MoveDir == Vector3.zero)
         {
             player.ChangeState(new IdleState());
@@ -98,6 +109,7 @@ public class RunningState : IPlayerState
         {
             player.ChangeState(new JumpingState());
             player.JumpOn = false;
+            player.IsJumping = true;
             return;
         }
 
@@ -122,18 +134,26 @@ public class JumpingState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        CheckisGrounded(player);
+        Debug.Log("¶¥"+isGrounded);
 
         if (isGrounded == true)
         {
             player.PlayerAnimator.SetTrigger("isLand");
             canJump = true;
             player.ChangeState(new IdleState());
+            player.IsJumping = false;
+        }
+
+        else
+        {
+            canJump = false;
         }
     }
 
     public void FixedUpdateState(PlayerController player)
     {
+        CheckisGrounded(player);
+
         if (player.Rigid.velocity.y != 0)
         {
             Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir * 0.5f);
@@ -144,6 +164,7 @@ public class JumpingState : IPlayerState
     private void CheckisGrounded(PlayerController player)
     {
         RaycastHit hit;
+        Debug.DrawRay(player.transform.position, Vector3.down * 1.0f, Color.red, 0);
 
         if (Physics.Raycast(player.transform.position, Vector3.down, out hit, 0.9f))
         {

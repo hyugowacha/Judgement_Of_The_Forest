@@ -36,6 +36,12 @@ public partial class PlayerController : MonoBehaviour
         set { jumpOn = value; }
     }
 
+    public bool IsJumping
+    {
+        get { return isJumping; }
+        set { isJumping = value; }
+    }
+
     public Vector3 MoveDir
     {
         get { return moveDir; }

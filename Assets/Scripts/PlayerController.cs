@@ -20,6 +20,7 @@ public partial class PlayerController : MonoBehaviour
     bool attackOn;
     bool dashOn;
     bool jumpOn;
+    bool isJumping;
 
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
