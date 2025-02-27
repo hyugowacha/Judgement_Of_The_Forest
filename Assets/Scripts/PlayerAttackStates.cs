@@ -45,6 +45,11 @@ public class ComboAttack1State : IPlayerState
     public void FixedUpdateState(PlayerController player)
     {
     }
+
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "ATTACKING";
+    }
 }
 
 public class ComboAttack2State : IPlayerState
@@ -88,6 +93,11 @@ public class ComboAttack2State : IPlayerState
             player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 100));
             playerCanTurn = false;
         }
+    }
+
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "ATTACKING";
     }
 }
 
@@ -135,6 +145,10 @@ public class ComboAttack3State : IPlayerState
         }
     }
 
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "ATTACKING";
+    }
 }
 
 public class ComboAttack4State : IPlayerState
@@ -175,4 +189,8 @@ public class ComboAttack4State : IPlayerState
         }
     }
 
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "ATTACKING";
+    }
 }

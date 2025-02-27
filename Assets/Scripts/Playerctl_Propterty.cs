@@ -12,6 +12,12 @@ public partial class PlayerController : MonoBehaviour
         set { playerAnimator = value; }
     }
 
+    public string StateName
+    {
+        get { return stateName; }
+        set { stateName = value; }  
+    }
+
     public float MaxWatingTime
     {
         get { return maxWatingTime; }
@@ -40,6 +46,12 @@ public partial class PlayerController : MonoBehaviour
     {
         get { return isJumping; }
         set { isJumping = value; }
+    }
+
+    public bool CanJump
+    {
+        get { return canJump; }
+        set { canJump = value; }
     }
 
     public Vector3 MoveDir

@@ -1,22 +1,20 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum PlayerState
-{
-    IDLE, RUNNING, ATTACKING, FALLING
-}
 
 public partial class PlayerController : MonoBehaviour
 {
     Animator playerAnimator;
     Vector3 moveDir;
+    string stateName;
     float turnSpeed = 20.0f;
     float moveSpeed = 4.0f;
-    float maxWatingTime = 6.0f;
-    float jumpPower = 5.0f;
+    float maxWatingTime = 5.0f;
+    float jumpPower = 10.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
@@ -24,6 +22,7 @@ public partial class PlayerController : MonoBehaviour
     bool dashOn;
     bool jumpOn;
     bool isJumping;
+    bool canJump = true;
 
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
@@ -76,6 +75,7 @@ public partial class PlayerController : MonoBehaviour
     {
         playerCurrentState = newState;
         playerCurrentState.EnterState(this);
+        playerCurrentState.CheckNowState(this);
     }
 
     void OnMove(InputAction.CallbackContext ctx)
@@ -104,16 +104,17 @@ public partial class PlayerController : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext ctx)
     {
-        jumpOn = true;
-
-        Vector3 jumpDirection = (moveDir.normalized * moveSpeed) + (Vector3.up * jumpPower);
-        Rigid.AddForce(jumpDirection, ForceMode.Impulse);
-        playerAnimator.SetTrigger("isJump");
+        if(CanJump == true)
+        {
+            jumpOn = true;
+        }
     }
 
     private void Update()
     {
-        Debug.Log(rigid.velocity.y);
+        Debug.Log(stateName);
+        //Debug.Log(playerCurrentState.ToString());
+        Debug.Log(canJump);
         playerCurrentState.UpdateState(this);
     
     }
@@ -121,8 +122,7 @@ public partial class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         playerCurrentState.FixedUpdateState(this);
-        Debug.Log(playerCurrentState.ToString());
-        //Debug.Log(transform.position);
+        //Debug.Log(rigid.velocity.y);
     }
 
 }

@@ -1,33 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public interface IPlayerState
 {
     void EnterState(PlayerController player);
     void UpdateState(PlayerController player);
     void FixedUpdateState(PlayerController player);
+    void CheckNowState(PlayerController player);
 }
 
 public class IdleState : IPlayerState
 {
     public void EnterState(PlayerController player)
     {
+        player.Rigid.velocity = new Vector3(player.Rigid.velocity.x, 0, player.Rigid.velocity.z);
         player.PlayerAnimator.applyRootMotion = false;
         player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
+
     }
 
     public void UpdateState(PlayerController player)
     {
-        if (player.IsJumping == true)
-        {
-            //player.ChangeState(new JumpingState());
-            return;
-        }
-
-        if (player.MoveDir != Vector3.zero)
+        if (player.MoveDir != Vector3.zero && !player.AnimationInfo.IsName("Land"))
         {
             player.ChangeState(new RunningState());
             return;
@@ -39,17 +38,22 @@ public class IdleState : IPlayerState
             return;
         }
 
-        if(player.Rigid.velocity.y <= -7)
+        if(player.Rigid.velocity.y <= -1)
         {
             player.ChangeState(new FallingState());
         }
 
-        //if (player.JumpOn == true)
-        //{
-        //    player.IsJumping = true;
-        //    player.JumpOn = false;
-        //    return;
-        //}
+        if (player.JumpOn == true)
+        {
+            player.ChangeState(new JumpingState());
+            player.JumpOn = false;
+            return;
+        }
+    }
+
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "IDLE";
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -60,8 +64,14 @@ public class IdleState : IPlayerState
 
 public class RunningState : IPlayerState
 {
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "RUNNING";
+    }
+
     public void EnterState(PlayerController player)
     {
+        
         player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         if (player.PlayerWeapon.activeSelf == true)
         {
@@ -71,7 +81,7 @@ public class RunningState : IPlayerState
     }
 
     public void FixedUpdateState(PlayerController player)
-    {
+    { 
         Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
         player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
         player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
@@ -80,7 +90,7 @@ public class RunningState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        if (player.MoveDir == Vector3.zero)
+        if (player.MoveDir == Vector3.zero && player.StateName != "FALLING")
         {
             player.ChangeState(new IdleState());
             return;
@@ -104,29 +114,28 @@ public class RunningState : IPlayerState
             player.PlayerAnimator.SetBool("isDash", false);
         }
 
-        if (player.Rigid.velocity.y <= -7)
+        if (player.Rigid.velocity.y <= -6)
         {
             player.ChangeState(new FallingState());
         }
 
-        //if (player.JumpOn == true)
-        //{
-        //    //player.ChangeState(new JumpingState());
-        //    player.IsJumping = true;
-        //    player.JumpOn = false;
-        //    return;
-        //}
-
+        if (player.JumpOn == true)
+        {
+            player.ChangeState(new JumpingState());
+            player.JumpOn = false;
+            return;
+        }
     }
 }
 
 public class FallingState : IPlayerState
 {
-    bool isGrounded = true;
+    bool isGrounded = false;
     Coroutine isGroundedCor;
 
     public void EnterState(PlayerController player)
     {
+        player.PlayerAnimator.SetBool("isFalling", true);
         isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
     }
 
@@ -134,15 +143,11 @@ public class FallingState : IPlayerState
     {
         if (isGrounded == true)
         {
-            if (player.MoveDir ==Vector3.zero)
+            if(isGroundedCor != null)
             {
-                player.ChangeState(new IdleState());
+                isGroundedCor = null;
             }
-
-            if (player.MoveDir != Vector3.zero)
-            {
-                player.ChangeState(new RunningState());
-            }
+            player.ChangeState(new IdleState());
         }
 
     }
@@ -158,7 +163,7 @@ public class FallingState : IPlayerState
         Debug.DrawRay(new Vector3(player.transform.position.x, player.transform.position.y +
             0.9f, player.transform.position.z), Vector3.down, Color.red, 0);
 
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
 
         while (true)
         {
@@ -168,9 +173,11 @@ public class FallingState : IPlayerState
             if (groundDetected == true && hit.collider != null)
             {
                 isGrounded = true;
-                player.PlayerAnimator.SetTrigger("isLand");
+                player.PlayerAnimator.SetBool("isFalling",false);
                 player.Rigid.velocity = Vector3.zero;
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.2f);
+                player.CanJump = true;
+                yield return new WaitForSeconds(0.2f);
                 yield break;
             }
 
@@ -183,10 +190,48 @@ public class FallingState : IPlayerState
         }
     }
 
-
-
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "FALLING";
+    }
 }
 
+public class JumpingState : IPlayerState
+{
+    Coroutine changeToFallingcor;
+
+    public void EnterState(PlayerController player)
+    {
+        if(player.CanJump == true) //점프가 가능한 상태라면
+        {
+            player.CanJump = false;
+            player.Rigid.velocity = Vector3.zero;
+            Vector3 jumpDirection = (player.MoveDir.normalized * player.MoveSpeed) + (Vector3.up * player.JumpPower);
+            player.Rigid.AddForce(jumpDirection, ForceMode.Impulse);
+            player.PlayerAnimator.SetTrigger("isJump");//점프하면서 수행할 로직
+            changeToFallingcor = player.StartCoroutine(ChangeToFalling(player));
+        }
+    }
+
+    public IEnumerator ChangeToFalling(PlayerController player)
+    {
+        yield return new WaitForSeconds(0.3f);
+        player.ChangeState(new FallingState());
+    }
+
+    public void UpdateState(PlayerController player)
+    {
+    }
+    
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "JUMPING";
+    }
+
+    public void FixedUpdateState(PlayerController player)
+    {
+    }
+}
 //public class JumpingState : IPlayerState
 //{
 //    bool canJump = true;
@@ -350,5 +395,8 @@ public class AttackOnState : IPlayerState
     {
     }
 
-
+    public void CheckNowState(PlayerController player)
+    {
+        player.StateName = "ATTACKING";
+    }
 }
