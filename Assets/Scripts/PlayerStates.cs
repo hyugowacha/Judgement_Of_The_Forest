@@ -41,9 +41,8 @@ public class IdleState : IPlayerState
 
         if (player.JumpOn == true)
         {
-            player.ChangeState(new JumpingState());
-            player.JumpOn = false;
             player.IsJumping = true;
+            player.JumpOn = false;
             return;
         }
     }
@@ -58,6 +57,7 @@ public class RunningState : IPlayerState
 {
     public void EnterState(PlayerController player)
     {
+        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         if (player.PlayerWeapon.activeSelf == true)
         {
             player.PlayerWeapon.SetActive(false);
@@ -70,8 +70,6 @@ public class RunningState : IPlayerState
         Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
         player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
         player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
-
-        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
@@ -110,8 +108,8 @@ public class RunningState : IPlayerState
         if (player.JumpOn == true)
         {
             player.ChangeState(new JumpingState());
-            player.JumpOn = false;
             player.IsJumping = true;
+            player.JumpOn = false;
             return;
         }
 
@@ -126,6 +124,13 @@ public class JumpingState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
+        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
+
+        if (player.AnimationInfo.IsName("JumpStart") && player.AnimationInfo.IsName("Falling") && player.AnimationInfo.IsName("Land"))
+        {
+            return;
+        }
+
         if (isGrounded == true && canJump == true) 
         {
             player.PlayerAnimator.SetTrigger("isJump");

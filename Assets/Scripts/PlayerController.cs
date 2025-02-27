@@ -4,7 +4,10 @@ using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
+public enum PlayerState
+{
+    IDLE, RUNNING, ATTACKING, FALLING
+}
 
 public partial class PlayerController : MonoBehaviour
 {
