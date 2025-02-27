@@ -11,10 +11,10 @@ public partial class PlayerController : MonoBehaviour
     Animator playerAnimator;
     Vector3 moveDir;
     string stateName;
-    float turnSpeed = 20.0f;
+    float turnSpeed = 15.0f;
     float moveSpeed = 4.0f;
     float maxWatingTime = 5.0f;
-    float jumpPower = 10.0f;
+    float jumpPower = 5.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
@@ -86,7 +86,10 @@ public partial class PlayerController : MonoBehaviour
 
     void OnAttack(InputAction.CallbackContext ctx)
     {
-        attackOn = true;
+        if(stateName != "JUMPING" && stateName != "FALLING")
+        {
+            attackOn = true;
+        }
     }
 
     void OnDash(InputAction.CallbackContext ctx)
