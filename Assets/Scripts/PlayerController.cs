@@ -105,12 +105,17 @@ public partial class PlayerController : MonoBehaviour
     void OnJump(InputAction.CallbackContext ctx)
     {
         jumpOn = true;
+
+        Vector3 jumpDirection = (moveDir.normalized * moveSpeed) + (Vector3.up * jumpPower);
+        Rigid.AddForce(jumpDirection, ForceMode.Impulse);
+        playerAnimator.SetTrigger("isJump");
     }
 
     private void Update()
     {
+        Debug.Log(rigid.velocity.y);
         playerCurrentState.UpdateState(this);
-        Debug.DrawRay(new Vector3(transform.position.x, transform.position.y + 0.9f, transform.position.z), Vector3.down * 1.0f, Color.red, 0);
+    
     }
 
     private void FixedUpdate()

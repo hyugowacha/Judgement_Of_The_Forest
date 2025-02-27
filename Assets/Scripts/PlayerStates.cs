@@ -23,7 +23,7 @@ public class IdleState : IPlayerState
     {
         if (player.IsJumping == true)
         {
-            player.ChangeState(new JumpingState());
+            //player.ChangeState(new JumpingState());
             return;
         }
 
@@ -39,12 +39,17 @@ public class IdleState : IPlayerState
             return;
         }
 
-        if (player.JumpOn == true)
+        if(player.Rigid.velocity.y <= -7)
         {
-            player.IsJumping = true;
-            player.JumpOn = false;
-            return;
+            player.ChangeState(new FallingState());
         }
+
+        //if (player.JumpOn == true)
+        //{
+        //    player.IsJumping = true;
+        //    player.JumpOn = false;
+        //    return;
+        //}
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -75,12 +80,6 @@ public class RunningState : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        if (player.IsJumping == true)
-        {
-            player.ChangeState(new JumpingState());
-            return;
-        }
-
         if (player.MoveDir == Vector3.zero)
         {
             player.ChangeState(new IdleState());
@@ -105,59 +104,42 @@ public class RunningState : IPlayerState
             player.PlayerAnimator.SetBool("isDash", false);
         }
 
-        if (player.JumpOn == true)
+        if (player.Rigid.velocity.y <= -7)
         {
-            player.ChangeState(new JumpingState());
-            player.IsJumping = true;
-            player.JumpOn = false;
-            return;
+            player.ChangeState(new FallingState());
         }
+
+        //if (player.JumpOn == true)
+        //{
+        //    //player.ChangeState(new JumpingState());
+        //    player.IsJumping = true;
+        //    player.JumpOn = false;
+        //    return;
+        //}
 
     }
 }
 
-public class JumpingState : IPlayerState
+public class FallingState : IPlayerState
 {
-    bool canJump = true;
     bool isGrounded = true;
     Coroutine isGroundedCor;
 
     public void EnterState(PlayerController player)
     {
-        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
-
-        if (player.AnimationInfo.IsName("JumpStart") && player.AnimationInfo.IsName("Falling") && player.AnimationInfo.IsName("Land"))
-        {
-            return;
-        }
-
-        if (isGrounded == true && canJump == true) 
-        {
-            player.PlayerAnimator.SetTrigger("isJump");
-            player.Rigid.AddForce(new Vector3(0, player.JumpPower, 0), ForceMode.Impulse);
-            canJump = false;
-        }
+        isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
     }
 
     public void UpdateState(PlayerController player)
     {
         if (isGrounded == true)
         {
-            isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
-            player.IsJumping = false;
-
-        }
-
-        if (isGrounded == true)
-        {
-            canJump = true;
-
-            if (player.Rigid.velocity == Vector3.zero)
+            if (player.MoveDir ==Vector3.zero)
             {
                 player.ChangeState(new IdleState());
             }
 
-            if (player.Rigid.velocity != Vector3.zero)
+            if (player.MoveDir != Vector3.zero)
             {
                 player.ChangeState(new RunningState());
             }
@@ -168,11 +150,6 @@ public class JumpingState : IPlayerState
     public void FixedUpdateState(PlayerController player)
     {
 
-        if (player.Rigid.velocity.y != 0)
-        {
-            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir * 0.5f);
-            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 0.5f));
-        }
     }
 
     public IEnumerator CheckisGrounded(PlayerController player)
@@ -188,13 +165,12 @@ public class JumpingState : IPlayerState
             bool groundDetected = Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y +
                 0.9f, player.transform.position.z), Vector3.down, out hit, 1.0f, LayerMask.GetMask("Ground"));
 
-            if (groundDetected == true &&  hit.collider != null)
+            if (groundDetected == true && hit.collider != null)
             {
                 isGrounded = true;
                 player.PlayerAnimator.SetTrigger("isLand");
                 player.Rigid.velocity = Vector3.zero;
                 yield return new WaitForSeconds(0.5f);
-                player.IsJumping = false;
                 yield break;
             }
 
@@ -210,6 +186,101 @@ public class JumpingState : IPlayerState
 
 
 }
+
+//public class JumpingState : IPlayerState
+//{
+//    bool canJump = true;
+//    bool isGrounded = true;
+//    Coroutine isGroundedCor;
+
+//    public void EnterState(PlayerController player)
+//    {
+//        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
+
+//        if (player.AnimationInfo.IsName("JumpStart") && player.AnimationInfo.IsName("Falling") && player.AnimationInfo.IsName("Land"))
+//        {
+//            return;
+//        }
+
+//        if (isGrounded == true && canJump == true) 
+//        {
+//            player.PlayerAnimator.SetTrigger("isJump");
+//            player.Rigid.AddForce(new Vector3(0, player.JumpPower, 0), ForceMode.Impulse);
+//            canJump = false;
+//        }
+//    }
+
+//    public void UpdateState(PlayerController player)
+//    {
+//        if (isGrounded == true)
+//        {
+//            isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
+//            player.IsJumping = false;
+
+//        }
+
+//        if (isGrounded == true)
+//        {
+//            canJump = true;
+
+//            if (player.Rigid.velocity == Vector3.zero)
+//            {
+//                player.ChangeState(new IdleState());
+//            }
+
+//            if (player.Rigid.velocity != Vector3.zero)
+//            {
+//                player.ChangeState(new RunningState());
+//            }
+//        }
+
+//    }
+
+//    public void FixedUpdateState(PlayerController player)
+//    {
+
+//        if (player.Rigid.velocity.y != 0)
+//        {
+//            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir * 0.5f);
+//            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 0.5f));
+//        }
+//    }
+
+//    public IEnumerator CheckisGrounded(PlayerController player)
+//    {
+//        RaycastHit hit;
+//        Debug.DrawRay(new Vector3(player.transform.position.x, player.transform.position.y +
+//            0.9f, player.transform.position.z), Vector3.down, Color.red, 0);
+
+//        yield return new WaitForSeconds(0.2f);
+
+//        while (true)
+//        {
+//            bool groundDetected = Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y +
+//                0.9f, player.transform.position.z), Vector3.down, out hit, 1.0f, LayerMask.GetMask("Ground"));
+
+//            if (groundDetected == true &&  hit.collider != null)
+//            {
+//                isGrounded = true;
+//                player.PlayerAnimator.SetTrigger("isLand");
+//                player.Rigid.velocity = Vector3.zero;
+//                yield return new WaitForSeconds(0.5f);
+//                player.IsJumping = false;
+//                yield break;
+//            }
+
+//            else
+//            {
+//                isGrounded = false;
+//            }
+
+//            yield return null;
+//        }
+//    }
+
+
+
+//}
 
 public class AttackOnState : IPlayerState
 {
