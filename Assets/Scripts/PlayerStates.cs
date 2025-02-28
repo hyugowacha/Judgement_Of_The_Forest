@@ -15,8 +15,12 @@ public interface IPlayerState
 
 public class IdleState : IPlayerState
 {
+    float waitTime;
+    float maxWaitTime = 10.0f;
+
     public void EnterState(PlayerController player)
     {
+        player.WeaponOff();
         player.Rigid.velocity = new Vector3(player.Rigid.velocity.x, 0, player.Rigid.velocity.z);
         player.PlayerAnimator.applyRootMotion = false;
         player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
@@ -38,7 +42,7 @@ public class IdleState : IPlayerState
             return;
         }
 
-        if(player.Rigid.velocity.y <= -1)
+        if (player.Rigid.velocity.y <= -1)
         {
             player.ChangeState(new FallingState());
         }
@@ -49,6 +53,13 @@ public class IdleState : IPlayerState
             player.JumpOn = false;
             return;
         }
+
+        if (player.ESkillOn == true)
+        {
+            player.ChangeState(new ESkillState());
+            return;
+        }
+
     }
 
     public void CheckNowState(PlayerController player)
@@ -58,7 +69,22 @@ public class IdleState : IPlayerState
 
     public void FixedUpdateState(PlayerController player)
     {
+        //Debug.Log(waitTime);
 
+        if (player.AnimationInfo.IsName("Waiting") == false) 
+        {
+            waitTime += Time.deltaTime;
+        }
+
+        else
+        {
+            waitTime = 0;
+        }
+
+        if (waitTime > maxWaitTime)
+        {
+            player.PlayerAnimator.SetTrigger("onWait");
+        }
     }
 }
 
@@ -71,17 +97,14 @@ public class RunningState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
-        
+
         player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
-        if (player.PlayerWeapon.activeSelf == true)
-        {
-            player.PlayerWeapon.SetActive(false);
-        }
+        player.WeaponOff();
         player.PlayerAnimator.applyRootMotion = false;
     }
 
     public void FixedUpdateState(PlayerController player)
-    { 
+    {
         Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
         player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
         player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
@@ -114,15 +137,21 @@ public class RunningState : IPlayerState
             player.PlayerAnimator.SetBool("isDash", false);
         }
 
-        if (player.Rigid.velocity.y <= -6)
-        {
-            player.ChangeState(new FallingState());
-        }
 
         if (player.JumpOn == true)
         {
             player.ChangeState(new JumpingState());
             player.JumpOn = false;
+            return;
+        }
+        if (player.Rigid.velocity.y <= -6)
+        {
+            player.ChangeState(new FallingState());
+        }
+
+        if (player.ESkillOn == true)
+        {
+            player.ChangeState(new ESkillState());
             return;
         }
     }
@@ -143,7 +172,7 @@ public class FallingState : IPlayerState
     {
         if (isGrounded == true)
         {
-            if(isGroundedCor != null)
+            if (isGroundedCor != null)
             {
                 isGroundedCor = null;
             }
@@ -173,8 +202,7 @@ public class FallingState : IPlayerState
             if (groundDetected == true && hit.collider != null)
             {
                 isGrounded = true;
-                player.PlayerAnimator.SetBool("isFalling",false);
-                player.Rigid.velocity = Vector3.zero;
+                player.PlayerAnimator.SetBool("isFalling", false);
                 yield return new WaitForSeconds(0.2f);
                 player.CanJump = true;
                 yield return new WaitForSeconds(0.2f);
@@ -202,8 +230,9 @@ public class JumpingState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
-        if(player.CanJump == true) //점프가 가능한 상태라면
+        if (player.CanJump == true) //점프가 가능한 상태라면
         {
+            player.CanStateChange = false;
             player.PlayerAnimator.SetTrigger("isJump");//점프하면서 수행할 로직
             player.CanJump = false;
             player.Rigid.velocity = Vector3.zero;
@@ -222,7 +251,7 @@ public class JumpingState : IPlayerState
     public void UpdateState(PlayerController player)
     {
     }
-    
+
     public void CheckNowState(PlayerController player)
     {
         player.StateName = "JUMPING";
@@ -286,11 +315,10 @@ public class AttackOnState : IPlayerState
 
     IEnumerator EndAttackState(PlayerController player)
     {
-        if (player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("Sheathing Sword"))
+        if (player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("SheathingSword"))
         {
             float animationLength = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).length;
             yield return new WaitForSecondsRealtime(animationLength);
-
             player.ChangeState(new IdleState());
             CanWeaponoff = false;
         }

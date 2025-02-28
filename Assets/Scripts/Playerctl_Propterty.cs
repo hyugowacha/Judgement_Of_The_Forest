@@ -42,6 +42,18 @@ public partial class PlayerController : MonoBehaviour
         set { jumpOn = value; }
     }
 
+    public bool ESkillOn
+    {
+        get { return eSkillOn; }
+        set { eSkillOn = value; }
+    }
+
+    public bool CanStateChange
+    {
+        get { return canStateChange; }
+        set { canStateChange = value; }
+    }
+
     public bool IsJumping
     {
         get { return isJumping; }

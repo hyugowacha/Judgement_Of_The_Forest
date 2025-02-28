@@ -14,20 +14,24 @@ public partial class PlayerController : MonoBehaviour
     float turnSpeed = 15.0f;
     float moveSpeed = 4.0f;
     float maxWatingTime = 5.0f;
-    float jumpPower = 5.0f;
+    float jumpPower = 3.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
+
     bool attackOn;
     bool dashOn;
     bool jumpOn;
     bool isJumping;
     bool canJump = true;
+    bool eSkillOn;
+    bool canStateChange;
 
     public GameObject playerWeapon;
     public AnimatorController attackAnimator;
     public AnimatorController moveAnimator;
     public Collider playerFeetCollider;
+    public AnimatorController eSkillAnimator;
 
     IPlayerState playerCurrentState;
 
@@ -37,6 +41,8 @@ public partial class PlayerController : MonoBehaviour
     InputAction attackAction;
     InputAction dashAction;
     InputAction jumpAction;
+
+    InputAction eSkillAction;
 
     void Start()
     {
@@ -52,6 +58,7 @@ public partial class PlayerController : MonoBehaviour
         attackAction = mainActionMap.FindAction("Attack");
         dashAction = mainActionMap.FindAction("Dash");
         jumpAction = mainActionMap.FindAction("Jump");
+        eSkillAction = mainActionMap.FindAction("NormalSkill");
 
         moveAction.performed += OnMove;
         moveAction.canceled += OnMove;
@@ -63,12 +70,28 @@ public partial class PlayerController : MonoBehaviour
 
         jumpAction.started += OnJump;
 
+        eSkillAction.performed += OnNormalSkill;
+        eSkillAction.canceled += OnNormalSkill;
+
         ChangeState(new IdleState());
     }
 
     public void WeaponOff()
     {
         playerWeapon.SetActive(false);
+    }
+
+    public void CanStateChangeValChanger()
+    {
+        if(canStateChange == false)
+        {
+            canStateChange = true;
+        }
+    }
+
+    public void ChangeToIdle()
+    {
+        ChangeState(new IdleState());
     }
 
     public void ChangeState(IPlayerState newState)
@@ -86,7 +109,7 @@ public partial class PlayerController : MonoBehaviour
 
     void OnAttack(InputAction.CallbackContext ctx)
     {
-        if(stateName != "JUMPING" && stateName != "FALLING")
+        if(stateName != "JUMPING" || stateName != "FALLING")
         {
             attackOn = true;
         }
@@ -107,9 +130,22 @@ public partial class PlayerController : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext ctx)
     {
-        if(CanJump == true)
+        if(stateName != "ATTACKING" && CanJump == true)
         {
             jumpOn = true;
+        }
+    }
+
+    void OnNormalSkill(InputAction.CallbackContext ctx)
+    {
+        if(ctx.performed)
+        {
+            eSkillOn = true;
+        }
+
+        if (ctx.canceled)
+        {
+            eSkillOn = false;
         }
     }
 
@@ -117,7 +153,8 @@ public partial class PlayerController : MonoBehaviour
     {
         Debug.Log(stateName);
         //Debug.Log(playerCurrentState.ToString());
-        Debug.Log(canJump);
+        //Debug.Log(canJump);
+        Debug.Log(eSkillOn);
         playerCurrentState.UpdateState(this);
     
     }
