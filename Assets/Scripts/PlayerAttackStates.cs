@@ -21,6 +21,7 @@ public class ComboAttack1State : IPlayerState
         player.AttackOn = false;
         player.PlayerWeapon.SetActive(true);
         player.PlayerAnimator.applyRootMotion = true;
+        player.attackArea.gameObject.SetActive(true);
 
     }
 
@@ -30,12 +31,14 @@ public class ComboAttack1State : IPlayerState
 
         if (player.AnimationInfo.IsName("Combo1") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new AttackOnState());
             return;
         }
 
         if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new ComboAttack2State());
             return;
         }
@@ -65,6 +68,7 @@ public class ComboAttack2State : IPlayerState
         {
             player.PlayerAnimator.SetTrigger("Attack2");
         }
+        player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
     }
 
@@ -74,12 +78,14 @@ public class ComboAttack2State : IPlayerState
 
         if (player.AnimationInfo.IsName("Combo2") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new AttackOnState());
             return;
         }
 
         if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new ComboAttack3State());
             return;
         }
@@ -114,7 +120,7 @@ public class ComboAttack3State : IPlayerState
         {
             player.PlayerAnimator.SetTrigger("Attack3");
         }
-
+        player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
     }
 
@@ -124,12 +130,14 @@ public class ComboAttack3State : IPlayerState
 
         if (player.AnimationInfo.IsName("Combo3") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new AttackOnState());
             return;
         }
 
         if (player.AttackOn == true && player.AnimationInfo.normalizedTime >= 0.5f)
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new ComboAttack4State());
             return;
         }
@@ -164,7 +172,7 @@ public class ComboAttack4State : IPlayerState
         {
             player.PlayerAnimator.SetTrigger("Attack4");
         }
-
+        player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
     }
 
@@ -174,6 +182,7 @@ public class ComboAttack4State : IPlayerState
 
         if (player.AnimationInfo.IsName("Attack_Idle"))
         {
+            player.attackArea.gameObject.SetActive(false);
             player.ChangeState(new AttackOnState());
             return;
         }

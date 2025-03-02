@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ESkillState : IPlayerState
 {
@@ -8,6 +9,8 @@ public class ESkillState : IPlayerState
     float maxChargeTime = 3.0f;
     bool canAttack;
     bool isEndSkill;
+    bool chargeOn;
+    bool isShot;
 
     public void EnterState(PlayerController player)
     {
@@ -17,13 +20,28 @@ public class ESkillState : IPlayerState
         player.playerWeapon.SetActive(true);
         player.PlayerAnimator.applyRootMotion = false;
         player.PlayerAnimator.runtimeAnimatorController = player.eSkillAnimator;
-    }
+        player.eSkillEffect.gameObject.SetActive(true);
+        chargeOn = true;
+        isShot = true;
+    } 
 
     public void UpdateState(PlayerController player)
     {
         //Debug.Log(chargeTime);
         //Debug.Log(player.CanStateChange);
         chargeTime += Time.deltaTime;
+
+        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (!player.AnimationInfo.IsName("NormalAttack") && chargeTime > maxChargeTime)
+        {
+            player.eSkillEffect.gameObject.SetActive(false);
+            if(chargeOn == true)
+            {
+                player.eSkillChargeEffect.gameObject.SetActive(true);
+                chargeOn = false;
+            }
+        }
 
         if (player.ESkillOn == false)
         {
@@ -71,7 +89,6 @@ public class ESkillState : IPlayerState
             }
         }
     }
-
 
     public void FixedUpdateState(PlayerController player)
     {

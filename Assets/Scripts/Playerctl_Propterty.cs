@@ -66,6 +66,12 @@ public partial class PlayerController : MonoBehaviour
         set { canJump = value; }
     }
 
+    public bool AreaOn
+    {
+        get { return areaOn; }
+        set { areaOn = value; }
+    }
+
     public Vector3 MoveDir
     {
         get { return moveDir; }

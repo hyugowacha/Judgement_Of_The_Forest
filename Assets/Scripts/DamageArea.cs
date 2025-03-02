@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class DamageArea : MonoBehaviour
 {
-    void Start()
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if(other.tag == "Enemy")
+        {
+            Debug.Log("АјАн");
+        }
     }
-
-    void Update()
-    {
-        
-    }
-
-
 }

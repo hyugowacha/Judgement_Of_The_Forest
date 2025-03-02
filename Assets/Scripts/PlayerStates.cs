@@ -105,9 +105,28 @@ public class RunningState : IPlayerState
 
     public void FixedUpdateState(PlayerController player)
     {
-        Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
-        player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed));
-        player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed);
+        Vector3 cameraForward = Camera.main.transform.forward;
+        cameraForward.y = 0f;
+        cameraForward.Normalize();
+
+        Vector3 cameraRight = Camera.main.transform.right;
+        cameraRight.y = 0f;
+
+        Vector3 desiredMoveDir = cameraForward * player.MoveDir.z
+            + cameraRight * player.MoveDir.x;
+        desiredMoveDir.Normalize();
+
+        if(desiredMoveDir.magnitude > 0f)
+        {
+            Quaternion PlayerTurn = Quaternion.LookRotation(desiredMoveDir);
+            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, 
+                PlayerTurn, player.TurnSpeed));
+        }
+
+        player.Rigid.MovePosition(player.Rigid.position + desiredMoveDir 
+            * Time.deltaTime * player.MoveSpeed);
+        
+        
         player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
