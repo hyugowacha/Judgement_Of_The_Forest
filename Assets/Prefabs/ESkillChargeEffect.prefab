@@ -4930,6 +4930,7 @@ GameObject:
   - component: {fileID: 5305853991254173695}
   - component: {fileID: 6243963737405872745}
   - component: {fileID: 4108595968116235579}
+  - component: {fileID: 8092648470157754529}
   m_Layer: 0
   m_Name: ESkillChargeEffect
   m_TagString: Untagged
@@ -9841,6 +9842,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.928003, y: 9.327122, z: 0.8775237}
   m_Center: {x: 0.4887917, y: -0.6354275, z: -0.2204956}
+--- !u!54 &8092648470157754529
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3645453176256756246}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &3960074913476394713
 GameObject:
   m_ObjectHideFlags: 0

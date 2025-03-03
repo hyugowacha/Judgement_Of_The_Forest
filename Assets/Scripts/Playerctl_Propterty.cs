@@ -72,6 +72,12 @@ public partial class PlayerController : MonoBehaviour
         set { areaOn = value; }
     }
 
+    public bool QSkillOn
+    {
+        get { return qSkillOn; }
+        set { qSkillOn = value; }
+    }
+
     public Vector3 MoveDir
     {
         get { return moveDir; }

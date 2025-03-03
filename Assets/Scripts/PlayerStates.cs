@@ -60,6 +60,13 @@ public class IdleState : IPlayerState
             return;
         }
 
+        if (player.QSkillOn == true)
+        {
+            player.ChangeState(new QSkillState());
+            player.QSkillOn = false;
+            return;
+        }
+
     }
 
     public void CheckNowState(PlayerController player)
@@ -90,6 +97,7 @@ public class IdleState : IPlayerState
 
 public class RunningState : IPlayerState
 {
+    Vector3 desiredMoveDir;
     public void CheckNowState(PlayerController player)
     {
         player.StateName = "RUNNING";
@@ -112,8 +120,7 @@ public class RunningState : IPlayerState
         Vector3 cameraRight = Camera.main.transform.right;
         cameraRight.y = 0f;
 
-        Vector3 desiredMoveDir = cameraForward * player.MoveDir.z
-            + cameraRight * player.MoveDir.x;
+        desiredMoveDir = cameraForward * player.MoveDir.z + cameraRight * player.MoveDir.x;
         desiredMoveDir.Normalize();
 
         if(desiredMoveDir.magnitude > 0f)
@@ -148,7 +155,7 @@ public class RunningState : IPlayerState
         if (player.DashOn == true)
         {
             player.PlayerAnimator.SetBool("isDash", true);
-            player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
+            player.Rigid.MovePosition(player.Rigid.position + desiredMoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
         }
 
         if (player.DashOn == false || player.MoveDir == Vector3.zero)
@@ -173,6 +180,7 @@ public class RunningState : IPlayerState
             player.ChangeState(new ESkillState());
             return;
         }
+
     }
 }
 
@@ -255,7 +263,19 @@ public class JumpingState : IPlayerState
             player.PlayerAnimator.SetTrigger("isJump");//점프하면서 수행할 로직
             player.CanJump = false;
             player.Rigid.velocity = Vector3.zero;
-            Vector3 jumpDirection = (player.MoveDir.normalized * player.MoveSpeed) + (Vector3.up * player.JumpPower);
+
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0f;
+
+            Vector3 desiredMoveDir = cameraForward * player.MoveDir.z + cameraRight * player.MoveDir.x;
+            desiredMoveDir.Normalize();
+
+            Vector3 jumpDirection = (desiredMoveDir * player.MoveSpeed) + (Vector3.up * player.JumpPower);
+
             player.Rigid.AddForce(jumpDirection, ForceMode.Impulse);
             changeToFallingcor = player.StartCoroutine(ChangeToFalling(player));
         }

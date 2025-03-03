@@ -95,8 +95,26 @@ public class ComboAttack2State : IPlayerState
     {
         if (playerCanTurn == true && player.MoveDir != Vector3.zero)
         {
-            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
-            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 100));
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0f;
+
+            Vector3 desiredMoveDir = cameraForward * player.MoveDir.z + cameraRight * player.MoveDir.x;
+            desiredMoveDir.Normalize();
+
+            if (desiredMoveDir.magnitude > 0f)
+            {
+                Quaternion PlayerTurn = Quaternion.LookRotation(desiredMoveDir);
+                player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation,
+                    PlayerTurn, player.TurnSpeed * 200));
+            }
+
+            player.Rigid.MovePosition(player.Rigid.position + desiredMoveDir
+                * Time.deltaTime * player.MoveSpeed);
+
             playerCanTurn = false;
         }
     }
@@ -147,8 +165,25 @@ public class ComboAttack3State : IPlayerState
     {
         if (playerCanTurn == true && player.MoveDir != Vector3.zero)
         {
-            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
-            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 100));
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0f;
+            cameraForward.Normalize();
+
+            Vector3 cameraRight = Camera.main.transform.right;
+            cameraRight.y = 0f;
+
+            Vector3 desiredMoveDir = cameraForward * player.MoveDir.z + cameraRight * player.MoveDir.x;
+            desiredMoveDir.Normalize();
+
+            if (desiredMoveDir.magnitude > 0f)
+            {
+                Quaternion PlayerTurn = Quaternion.LookRotation(desiredMoveDir);
+                player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation,
+                    PlayerTurn, player.TurnSpeed * 200));
+            }
+
+            player.Rigid.MovePosition(player.Rigid.position + desiredMoveDir
+                * Time.deltaTime * player.MoveSpeed);
             playerCanTurn = false;
         }
     }
@@ -190,12 +225,6 @@ public class ComboAttack4State : IPlayerState
 
     public void FixedUpdateState(PlayerController player)
     {
-        if (playerCanTurn == true && player.MoveDir != Vector3.zero)
-        {
-            Quaternion PlayerTurn = Quaternion.LookRotation(player.MoveDir);
-            player.Rigid.MoveRotation(Quaternion.RotateTowards(player.Rigid.rotation, PlayerTurn, player.TurnSpeed * 100));
-            playerCanTurn = false;
-        }
     }
 
     public void CheckNowState(PlayerController player)

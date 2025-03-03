@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Cinemachine;
 
 public class ESkillState : IPlayerState
 {
@@ -100,4 +101,45 @@ public class ESkillState : IPlayerState
         player.StateName = "Eskill";
     }
 
+}
+
+public class QSkillState : IPlayerState
+{
+    CinemachineTrackedDolly dolly;
+
+    public void EnterState(PlayerController player)
+    {
+        player.PlayerAnimator.runtimeAnimatorController = player.qSkillAnimator;
+        dolly = player.QCutScenecam.GetComponentInChildren<CinemachineTrackedDolly>();
+        player.StartCoroutine(changeCamera(player));
+    }
+
+    public void FixedUpdateState(PlayerController player)
+    {
+
+    }
+
+    public void UpdateState(PlayerController player)
+    {
+        
+    }
+
+    public void CheckNowState(PlayerController player)
+    {
+
+    }
+
+    public IEnumerator changeCamera(PlayerController player)
+    {
+        player.QCutScenecam.Priority = 12;
+        yield return new WaitForSeconds(2.0f);
+        dolly.m_AutoDolly.m_Enabled = true;
+        yield return new WaitForSeconds(2.0f);
+        dolly.m_AutoDolly.m_Enabled = false;
+        player.QCutScenecam.Priority = 9;
+        yield return new WaitForSeconds(0.1f);
+        dolly.m_PathPosition = 0;
+        player.ChangeState(new IdleState());
+        yield return 0;
+    }
 }

@@ -11,10 +11,10 @@ public partial class PlayerController : MonoBehaviour
     Animator playerAnimator;
     Vector3 moveDir;
     string stateName;
-    float turnSpeed = 30.0f;
+    float turnSpeed = 20.0f;
     float moveSpeed = 4.0f;
     float maxWatingTime = 5.0f;
-    float jumpPower = 3.0f;
+    float jumpPower = 4.0f;
     Rigidbody rigid;
     Vector2 dir;
     AnimatorStateInfo animationInfo;
@@ -25,6 +25,7 @@ public partial class PlayerController : MonoBehaviour
     bool isJumping;
     bool canJump = true;
     bool eSkillOn;
+    bool qSkillOn;
     bool canStateChange;
     bool areaOn;
 
@@ -32,6 +33,7 @@ public partial class PlayerController : MonoBehaviour
     public AnimatorController attackAnimator;
     public AnimatorController moveAnimator;
     public AnimatorController eSkillAnimator;
+    public AnimatorController qSkillAnimator;
     public Collider attackArea;
     public ParticleSystem eSkillEffect;
     public ParticleSystem eSkillChargeEffect;
@@ -49,6 +51,7 @@ public partial class PlayerController : MonoBehaviour
     InputAction jumpAction;
 
     InputAction eSkillAction;
+    InputAction qSkillAction;
 
     void Start()
     {
@@ -65,6 +68,7 @@ public partial class PlayerController : MonoBehaviour
         dashAction = mainActionMap.FindAction("Dash");
         jumpAction = mainActionMap.FindAction("Jump");
         eSkillAction = mainActionMap.FindAction("NormalSkill");
+        qSkillAction = mainActionMap.FindAction("BurstSkill");
 
         moveAction.performed += OnMove;
         moveAction.canceled += OnMove;
@@ -78,6 +82,8 @@ public partial class PlayerController : MonoBehaviour
 
         eSkillAction.performed += OnNormalSkill;
         eSkillAction.canceled += OnNormalSkill;
+
+        qSkillAction.started += OnBurstSkill;
 
         ChangeState(new IdleState());
     }
@@ -160,22 +166,25 @@ public partial class PlayerController : MonoBehaviour
             eSkillOn = false;
         }
     }
+    void OnBurstSkill(InputAction.CallbackContext ctx)
+    {
+        qSkillOn = true;
+    }
 
     public void InstantiateECharge()
     {
-        Instantiate(eChargeProjectile, SlashPoint.transform.position, transform.rotation);
+        var projectile =  Instantiate(eChargeProjectile, SlashPoint.transform.position, transform.rotation);
+        projectile.GetComponent<Rigidbody>().AddForce(SlashPoint.transform.forward*10, ForceMode.Impulse);
     }
 
     public void InstantiateENormal()
     {
-        Instantiate(eSkillProjectile, SlashPoint.transform.position, transform.rotation);
+        var projectile = Instantiate(eSkillProjectile, SlashPoint.transform.position, transform.rotation);
+        projectile.GetComponent<Rigidbody>().AddForce(SlashPoint.transform.forward*10, ForceMode.Impulse);
     }
 
     private void Update()
     {
-        Debug.Log(stateName);
-        //Debug.Log(playerCurrentState.ToString());
-        //Debug.Log(canJump);
         Debug.Log(eSkillOn);
         playerCurrentState.UpdateState(this);
 
