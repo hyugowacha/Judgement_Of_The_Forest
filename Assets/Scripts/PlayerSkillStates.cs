@@ -15,6 +15,7 @@ public class ESkillState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
+        player.WeaponOff();
         player.CanStateChange = false;
         canAttack = true;
         chargeTime = 0;
@@ -24,7 +25,7 @@ public class ESkillState : IPlayerState
         player.eSkillEffect.gameObject.SetActive(true);
         chargeOn = true;
         isShot = true;
-    } 
+    }
 
     public void UpdateState(PlayerController player)
     {
@@ -37,7 +38,7 @@ public class ESkillState : IPlayerState
         if (!player.AnimationInfo.IsName("NormalAttack") && chargeTime > maxChargeTime)
         {
             player.eSkillEffect.gameObject.SetActive(false);
-            if(chargeOn == true)
+            if (chargeOn == true)
             {
                 player.eSkillChargeEffect.gameObject.SetActive(true);
                 chargeOn = false;
@@ -109,25 +110,11 @@ public class QSkillState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
+        player.WeaponOff();
         player.PlayerAnimator.runtimeAnimatorController = player.qSkillAnimator;
         dolly = player.QCutScenecam.GetComponentInChildren<CinemachineTrackedDolly>();
         player.StartCoroutine(changeCamera(player));
         player.StartCoroutine(FireballInstantiate(player));
-    }
-
-    public void FixedUpdateState(PlayerController player)
-    {
-
-    }
-
-    public void UpdateState(PlayerController player)
-    {
-        
-    }
-
-    public void CheckNowState(PlayerController player)
-    {
-
     }
 
     public IEnumerator changeCamera(PlayerController player)
@@ -135,7 +122,7 @@ public class QSkillState : IPlayerState
         player.QCutScenecam.Priority = 12;
         yield return new WaitForSeconds(2.0f);
         dolly.m_AutoDolly.m_Enabled = true;
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3.0f);
         dolly.m_AutoDolly.m_Enabled = false;
         player.QCutScenecam.Priority = 9;
         yield return new WaitForSeconds(0.1f);
@@ -146,11 +133,38 @@ public class QSkillState : IPlayerState
 
     public IEnumerator FireballInstantiate(PlayerController player)
     {
-        for(int i = 0; i<5; i++)
+        GameObject[] fireballs = new GameObject[5];
+        GameObject fireball;
+        for (int i = 0; i < 5; i++)
         {
-            player.InstantiateFireball(i);
+            fireball = player.InstantiateFireball(i);
+            fireballs[i] = fireball;
             yield return new WaitForSeconds(0.2f);
         }
+
+        yield return new WaitForSeconds(1.5f);
+
+        for (int i = 0; i < 5; i++)
+        {
+            fireballs[i].GetComponent<Rigidbody>().AddForce(player.FireballPoints[i].transform.forward*8, ForceMode.Impulse);
+        }
+
         yield return null;
+    }
+
+
+    public void FixedUpdateState(PlayerController player)
+    {
+
+    }
+
+    public void UpdateState(PlayerController player)
+    {
+
+    }
+
+    public void CheckNowState(PlayerController player)
+    {
+
     }
 }

@@ -181,6 +181,12 @@ public class RunningState : IPlayerState
             return;
         }
 
+        if (player.QSkillOn == true)
+        {
+            player.ChangeState(new QSkillState());
+            player.QSkillOn = false;
+            return;
+        }
     }
 }
 
@@ -324,6 +330,13 @@ public class AttackOnState : IPlayerState
         if (player.AttackOn == true && player.AnimationInfo.IsName("Attack_Idle"))
         {
             player.ChangeState(new ComboAttack1State());
+        }
+
+        if (player.QSkillOn == true)
+        {
+            player.ChangeState(new QSkillState());
+            player.QSkillOn = false;
+            return;
         }
 
         if (player.AnimationInfo.IsName("Attack_Idle"))

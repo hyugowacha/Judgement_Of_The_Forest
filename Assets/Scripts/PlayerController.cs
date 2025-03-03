@@ -19,6 +19,9 @@ public partial class PlayerController : MonoBehaviour
     Vector2 dir;
     AnimatorStateInfo animationInfo;
 
+    public float hp = 100;
+    public float atk = 100;
+
     bool attackOn;
     bool dashOn;
     bool jumpOn;
@@ -186,9 +189,10 @@ public partial class PlayerController : MonoBehaviour
         projectile.GetComponent<Rigidbody>().AddForce(SlashPoint.transform.forward*10, ForceMode.Impulse);
     }
 
-    public void InstantiateFireball(int num)
+    public GameObject InstantiateFireball(int num)
     {
-        var projectile = Instantiate(FireballProjectile, FireballPoints[num].transform.position, transform.rotation);
+        GameObject projectile = Instantiate(FireballProjectile, FireballPoints[num].transform.position, transform.rotation);
+        return projectile;
     }
 
     private void Update()

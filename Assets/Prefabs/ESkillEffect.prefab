@@ -14531,9 +14531,10 @@ GameObject:
   - component: {fileID: 8200803802684079903}
   - component: {fileID: 6470472849345621581}
   - component: {fileID: -8522649156284172229}
+  - component: {fileID: 7086231995112695212}
   m_Layer: 0
   m_Name: ESkillEffect
-  m_TagString: Untagged
+  m_TagString: ENormal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19399,6 +19400,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &7086231995112695212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3370248086726859644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e1de19c695db74492370995bcdb331, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ENormalDamage: 50
+  EChargeDamage: 100
 --- !u!1 &6260182201704004980
 GameObject:
   m_ObjectHideFlags: 0
