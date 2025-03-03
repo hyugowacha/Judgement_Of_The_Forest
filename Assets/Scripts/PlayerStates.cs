@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public interface IPlayerState
 {
@@ -22,9 +21,8 @@ public class IdleState : IPlayerState
     {
         player.WeaponOff();
         player.Rigid.velocity = new Vector3(player.Rigid.velocity.x, 0, player.Rigid.velocity.z);
-        player.PlayerAnimator.applyRootMotion = false;
-        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
-        player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
+        player.playerAnimator.applyRootMotion = false;
+        player.playerAnimator.SetFloat("isRun", player.Dir.magnitude);
 
     }
 
@@ -90,7 +88,7 @@ public class IdleState : IPlayerState
 
         if (waitTime > maxWaitTime)
         {
-            player.PlayerAnimator.SetTrigger("onWait");
+            player.playerAnimator.SetTrigger("onWait");
         }
     }
 }
@@ -106,9 +104,9 @@ public class RunningState : IPlayerState
     public void EnterState(PlayerController player)
     {
 
-        player.PlayerAnimator.runtimeAnimatorController = player.moveAnimator;
+        player.playerAnimator.runtimeAnimatorController = player.moveAnimator;
         player.WeaponOff();
-        player.PlayerAnimator.applyRootMotion = false;
+        player.playerAnimator.applyRootMotion = false;
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -134,7 +132,7 @@ public class RunningState : IPlayerState
             * Time.deltaTime * player.MoveSpeed);
         
         
-        player.PlayerAnimator.SetFloat("isRun", player.Dir.magnitude);
+        player.playerAnimator.SetFloat("isRun", player.Dir.magnitude);
     }
 
     public void UpdateState(PlayerController player)
@@ -154,13 +152,13 @@ public class RunningState : IPlayerState
 
         if (player.DashOn == true)
         {
-            player.PlayerAnimator.SetBool("isDash", true);
+            player.playerAnimator.SetBool("isDash", true);
             player.Rigid.MovePosition(player.Rigid.position + desiredMoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
         }
 
         if (player.DashOn == false || player.MoveDir == Vector3.zero)
         {
-            player.PlayerAnimator.SetBool("isDash", false);
+            player.playerAnimator.SetBool("isDash", false);
         }
 
 
@@ -197,7 +195,7 @@ public class FallingState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
-        player.PlayerAnimator.SetBool("isFalling", true);
+        player.playerAnimator.SetBool("isFalling", true);
         isGroundedCor = player.StartCoroutine(CheckisGrounded(player));
     }
 
@@ -230,12 +228,12 @@ public class FallingState : IPlayerState
         while (true)
         {
             bool groundDetected = Physics.Raycast(new Vector3(player.transform.position.x, player.transform.position.y +
-                0.9f, player.transform.position.z), Vector3.down, out hit, 1.0f, LayerMask.GetMask("Ground"));
+                0.9f, player.transform.position.z), Vector3.down, out hit, 1.2f, LayerMask.GetMask("Ground"));
 
             if (groundDetected == true && hit.collider != null)
             {
                 isGrounded = true;
-                player.PlayerAnimator.SetBool("isFalling", false);
+                player.playerAnimator.SetBool("isFalling", false);
                 yield return new WaitForSeconds(0.2f);
                 player.CanJump = true;
                 yield return new WaitForSeconds(0.2f);
@@ -266,7 +264,7 @@ public class JumpingState : IPlayerState
         if (player.CanJump == true) //점프가 가능한 상태라면
         {
             player.CanStateChange = false;
-            player.PlayerAnimator.SetTrigger("isJump");//점프하면서 수행할 로직
+            player.playerAnimator.SetTrigger("isJump");//점프하면서 수행할 로직
             player.CanJump = false;
             player.Rigid.velocity = Vector3.zero;
 
@@ -316,7 +314,7 @@ public class AttackOnState : IPlayerState
 
     public void EnterState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
         player.AttackOn = false;
     }
 
@@ -324,7 +322,7 @@ public class AttackOnState : IPlayerState
     {
         if (!player.AnimationInfo.IsName("Attack_Idle"))
         {
-            player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+            player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
         }
 
         if (player.AttackOn == true && player.AnimationInfo.IsName("Attack_Idle"))
@@ -351,7 +349,7 @@ public class AttackOnState : IPlayerState
 
             if (watingtime > player.MaxWatingTime)
             {
-                player.PlayerAnimator.SetTrigger("AttackOff");
+                player.playerAnimator.SetTrigger("AttackOff");
                 WeaponOffCoroutine = player.StartCoroutine(EndAttackState(player));
             }
 
@@ -367,9 +365,9 @@ public class AttackOnState : IPlayerState
 
     IEnumerator EndAttackState(PlayerController player)
     {
-        if (player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).IsName("SheathingSword"))
+        if (player.playerAnimator.GetCurrentAnimatorStateInfo(0).IsName("SheathingSword"))
         {
-            float animationLength = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0).length;
+            float animationLength = player.playerAnimator.GetCurrentAnimatorStateInfo(0).length;
             yield return new WaitForSecondsRealtime(animationLength);
             player.ChangeState(new IdleState());
             CanWeaponoff = false;

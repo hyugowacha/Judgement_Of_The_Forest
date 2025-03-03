@@ -1,30 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField]
-    float EnemyHp = 1000;
+    public float MaxEnemyHp = 10000;
+    public float CurEnemyHp = 10000;
 
+    public Image barImage;
+    public Image BossHealthbar;
 
-    void Start()
+    private void Update()
     {
-        
+        CheckHp();
     }
 
-    void Update()
+    private void CheckHp()
     {
-        
+        if(CurEnemyHp >= MaxEnemyHp)
+        {
+            BossHealthbar.gameObject.SetActive(false);
+        }
+
+        else
+        {
+            BossHealthbar.gameObject.SetActive(true);
+            barImage.fillAmount = CurEnemyHp / MaxEnemyHp;
+        }
     }
 
     public void EnterDamage(float Damage)
     {
-        EnemyHp -= Damage;
+        CurEnemyHp -= Damage;
+
+        if (CurEnemyHp <= 0)
+        {
+            Die();
+        }
     }
 
     private void Die()
     {
-        Debug.Log("die");
+        BossHealthbar.gameObject.SetActive(false);
     }
 }

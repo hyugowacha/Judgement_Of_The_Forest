@@ -20,8 +20,8 @@ public class ESkillState : IPlayerState
         canAttack = true;
         chargeTime = 0;
         player.playerWeapon.SetActive(true);
-        player.PlayerAnimator.applyRootMotion = false;
-        player.PlayerAnimator.runtimeAnimatorController = player.eSkillAnimator;
+        player.playerAnimator.applyRootMotion = false;
+        player.playerAnimator.runtimeAnimatorController = player.eSkillAnimator;
         player.eSkillEffect.gameObject.SetActive(true);
         chargeOn = true;
         isShot = true;
@@ -33,7 +33,7 @@ public class ESkillState : IPlayerState
         //Debug.Log(player.CanStateChange);
         chargeTime += Time.deltaTime;
 
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (!player.AnimationInfo.IsName("NormalAttack") && chargeTime > maxChargeTime)
         {
@@ -51,7 +51,7 @@ public class ESkillState : IPlayerState
             {
                 if (canAttack == true)
                 {
-                    player.PlayerAnimator.SetTrigger("OnCharge");
+                    player.playerAnimator.SetTrigger("OnCharge");
                 }
             }
 
@@ -59,7 +59,7 @@ public class ESkillState : IPlayerState
             {
                 if (canAttack == true)
                 {
-                    player.PlayerAnimator.SetTrigger("OnNormal");
+                    player.playerAnimator.SetTrigger("OnNormal");
                 }
             }
         }
@@ -81,13 +81,13 @@ public class ESkillState : IPlayerState
 
             if (player.DashOn == true)
             {
-                player.PlayerAnimator.SetBool("isDash", true);
+                player.playerAnimator.SetBool("isDash", true);
                 player.Rigid.MovePosition(player.Rigid.position + player.MoveDir * Time.deltaTime * player.MoveSpeed * 1.5f);
             }
 
             if (player.DashOn == false || player.MoveDir == Vector3.zero)
             {
-                player.PlayerAnimator.SetBool("isDash", false);
+                player.playerAnimator.SetBool("isDash", false);
             }
         }
     }
@@ -111,7 +111,7 @@ public class QSkillState : IPlayerState
     public void EnterState(PlayerController player)
     {
         player.WeaponOff();
-        player.PlayerAnimator.runtimeAnimatorController = player.qSkillAnimator;
+        player.playerAnimator.runtimeAnimatorController = player.qSkillAnimator;
         dolly = player.QCutScenecam.GetComponentInChildren<CinemachineTrackedDolly>();
         player.StartCoroutine(changeCamera(player));
         player.StartCoroutine(FireballInstantiate(player));
@@ -122,7 +122,7 @@ public class QSkillState : IPlayerState
         player.QCutScenecam.Priority = 12;
         yield return new WaitForSeconds(2.0f);
         dolly.m_AutoDolly.m_Enabled = true;
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(2.0f);
         dolly.m_AutoDolly.m_Enabled = false;
         player.QCutScenecam.Priority = 9;
         yield return new WaitForSeconds(0.1f);
@@ -142,7 +142,7 @@ public class QSkillState : IPlayerState
             yield return new WaitForSeconds(0.2f);
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
 
         for (int i = 0; i < 5; i++)
         {

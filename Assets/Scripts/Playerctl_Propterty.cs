@@ -1,17 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Animations;
 
 
 public partial class PlayerController : MonoBehaviour
 {
-    public Animator PlayerAnimator
-    {
-        get { return playerAnimator; }
-        set { playerAnimator = value; }
-    }
-
     public string StateName
     {
         get { return stateName; }

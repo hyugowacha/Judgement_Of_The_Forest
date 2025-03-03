@@ -6,28 +6,28 @@ public class ComboAttack1State : IPlayerState
 {
     public void EnterState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Attack_Idle"))
         {
-            player.PlayerAnimator.SetTrigger("Attack");
+            player.playerAnimator.SetTrigger("Attack");
         }
 
         else
         {
-            player.PlayerAnimator.runtimeAnimatorController = player.attackAnimator;
+            player.playerAnimator.runtimeAnimatorController = player.attackAnimator;
         }
 
         player.AttackOn = false;
         player.PlayerWeapon.SetActive(true);
-        player.PlayerAnimator.applyRootMotion = true;
+        player.playerAnimator.applyRootMotion = true;
         player.attackArea.gameObject.SetActive(true);
 
     }
 
     public void UpdateState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo1") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
@@ -62,11 +62,11 @@ public class ComboAttack2State : IPlayerState
     public void EnterState(PlayerController player)
     {
         playerCanTurn = true;
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo1"))
         {
-            player.PlayerAnimator.SetTrigger("Attack2");
+            player.playerAnimator.SetTrigger("Attack2");
         }
         player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
@@ -74,7 +74,7 @@ public class ComboAttack2State : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo2") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
@@ -132,11 +132,11 @@ public class ComboAttack3State : IPlayerState
     public void EnterState(PlayerController player)
     {
         playerCanTurn = true;
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo2"))
         {
-            player.PlayerAnimator.SetTrigger("Attack3");
+            player.playerAnimator.SetTrigger("Attack3");
         }
         player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
@@ -144,7 +144,7 @@ public class ComboAttack3State : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo3") && player.AnimationInfo.normalizedTime >= 1.0f)
         {
@@ -201,11 +201,11 @@ public class ComboAttack4State : IPlayerState
     public void EnterState(PlayerController player)
     {
         playerCanTurn = true;
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Combo3"))
         {
-            player.PlayerAnimator.SetTrigger("Attack4");
+            player.playerAnimator.SetTrigger("Attack4");
         }
         player.attackArea.gameObject.SetActive(true);
         player.AttackOn = false;
@@ -213,7 +213,7 @@ public class ComboAttack4State : IPlayerState
 
     public void UpdateState(PlayerController player)
     {
-        player.AnimationInfo = player.PlayerAnimator.GetCurrentAnimatorStateInfo(0);
+        player.AnimationInfo = player.playerAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (player.AnimationInfo.IsName("Attack_Idle"))
         {

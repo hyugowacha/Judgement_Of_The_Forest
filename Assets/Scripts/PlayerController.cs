@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
 public partial class PlayerController : MonoBehaviour
 {
-    Animator playerAnimator;
+    public Animator playerAnimator;
     Vector3 moveDir;
     string stateName;
     float turnSpeed = 20.0f;
@@ -32,11 +31,12 @@ public partial class PlayerController : MonoBehaviour
     bool canStateChange;
     bool areaOn;
 
+    
     public GameObject playerWeapon;
-    public AnimatorController attackAnimator;
-    public AnimatorController moveAnimator;
-    public AnimatorController eSkillAnimator;
-    public AnimatorController qSkillAnimator;
+    public RuntimeAnimatorController attackAnimator;
+    public RuntimeAnimatorController moveAnimator;
+    public RuntimeAnimatorController eSkillAnimator;
+    public RuntimeAnimatorController qSkillAnimator;
     public Collider attackArea;
     public ParticleSystem eSkillEffect;
     public ParticleSystem eSkillChargeEffect;
@@ -193,6 +193,11 @@ public partial class PlayerController : MonoBehaviour
     {
         GameObject projectile = Instantiate(FireballProjectile, FireballPoints[num].transform.position, transform.rotation);
         return projectile;
+    }
+
+    private void Awake()
+    {
+        Cursor.visible = false;
     }
 
     private void Update()
