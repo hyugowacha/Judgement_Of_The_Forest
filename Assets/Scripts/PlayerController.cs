@@ -40,6 +40,9 @@ public partial class PlayerController : MonoBehaviour
     public GameObject SlashPoint;
     public GameObject eSkillProjectile;
     public GameObject eChargeProjectile;
+    public GameObject FireballProjectile;
+
+    public GameObject[] FireballPoints;
 
     IPlayerState playerCurrentState;
 
@@ -181,6 +184,11 @@ public partial class PlayerController : MonoBehaviour
     {
         var projectile = Instantiate(eSkillProjectile, SlashPoint.transform.position, transform.rotation);
         projectile.GetComponent<Rigidbody>().AddForce(SlashPoint.transform.forward*10, ForceMode.Impulse);
+    }
+
+    public void InstantiateFireball(int num)
+    {
+        var projectile = Instantiate(FireballProjectile, FireballPoints[num].transform.position, transform.rotation);
     }
 
     private void Update()

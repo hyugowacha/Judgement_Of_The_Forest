@@ -112,6 +112,7 @@ public class QSkillState : IPlayerState
         player.PlayerAnimator.runtimeAnimatorController = player.qSkillAnimator;
         dolly = player.QCutScenecam.GetComponentInChildren<CinemachineTrackedDolly>();
         player.StartCoroutine(changeCamera(player));
+        player.StartCoroutine(FireballInstantiate(player));
     }
 
     public void FixedUpdateState(PlayerController player)
@@ -141,5 +142,15 @@ public class QSkillState : IPlayerState
         dolly.m_PathPosition = 0;
         player.ChangeState(new IdleState());
         yield return 0;
+    }
+
+    public IEnumerator FireballInstantiate(PlayerController player)
+    {
+        for(int i = 0; i<5; i++)
+        {
+            player.InstantiateFireball(i);
+            yield return new WaitForSeconds(0.2f);
+        }
+        yield return null;
     }
 }
